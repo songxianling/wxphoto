@@ -1,0 +1,159 @@
+<style lang="less">
+@import '../src/styles/base.less';
+</style>
+
+<script>
+import wepy from 'wepy';
+import 'wepy-async-function';
+import HOST from '../src/utils/wxRequest';
+import tip from '../src/utils/tip';
+
+import { setStore } from 'wepy-redux';
+import configStore from './store';
+
+const store = configStore();
+setStore(store);
+
+export default class extends wepy.app {
+  constructor() {
+    super();
+    this.use('requestfix');
+    this.use('promisify');
+    this.intercept('uploadFile', {
+      config(p) {
+        p.url = this.globalData.host + p.url;
+        return p;
+      },
+      success(p) {
+        return new Promise((resolve, reject) => {
+          try {
+            let data = JSON.parse(p.data);
+            if (data.code === 10000) {
+              resolve(data);
+            } else {
+              reject(data.message);
+            }
+          } catch (error) {
+            reject('服务器异常~~~');
+          }
+        })
+          .then(res => res)
+          .catch(error => {
+            wepy.showToast({
+              title: error,
+              icon: 'none'
+            });
+          });
+      }
+    });
+  }
+  config = {
+    pages: ['pages/index'],
+    window: {
+      navigationBarBackgroundColor: '#1b1b1f',
+      navigationBarTitleText: '我是一只小青蛙',
+      navigationBarTextStyle: 'white',
+      backgroundTextStyle: 'light',
+      enablePullDownRefresh: false
+    }
+  };
+
+  globalData = {
+    host: 'https://apiwx.xiangha.com',
+    userInfo: null,
+    jsCode: ''
+  };
+
+  async onLaunch(options) {
+    // 定义重新进入
+    wepy.setStorageSync('completelyAgain', true);
+    let that = this;
+    var userInfo = wepy.getStorageSync('userInfo');
+    if (!userInfo) {
+      wepy.login().then(res => {
+        // console.log("login数据如下");
+        // console.log(res);
+        let resData = res;
+        that.globalData.jsCode = resData.code;
+        wepy.getUserInfo().then(res => {
+          // console.log("getUserInfo数据如下");
+          // console.log(res.userInfo);
+          wx.request({
+            url: `${HOST.host}/DishMenus/main2/Index/init`,
+            data: {
+              jsCode: resData.code,
+              nickName: res.userInfo.nickName,
+              avatarUrl: res.userInfo.avatarUrl
+            },
+            method: 'POST',
+            success: function(res) {
+              // success
+              if (res.data.code == 10000) {
+                wepy.setStorageSync('userInfo', res.data.data);
+                let oUrl = getCurrentPages().pop().route;
+                if (
+                  oUrl == 'pages/recipeDetail' ||
+                  oUrl == 'pages/activityOne' ||
+                  oUrl == 'pages/collection' ||
+                  oUrl == 'pages/user'
+                ) {
+                  let ops = getCurrentPages().pop().options;
+                  let par = '';
+                  for (let i in ops) {
+                    par += `${i}=${ops[i]}&`;
+                  }
+                  wepy.reLaunch({
+                    url: `/${oUrl}?${par}`
+                  });
+                }
+              } else {
+                tip.toast(res.msg);
+              }
+            },
+            fail: function() {
+              // fail
+            },
+            complete: function() {
+              // complete
+            }
+          });
+        });
+      });
+    } else {
+      this.userInfo = userInfo;
+    }
+
+    // let xhHost = wepy.getStorageSync("xhHost");
+    // if(!xhHost){
+    //   wepy.setStorageSync("xhHost",'https://apiwx.xiangha.com');
+    // }
+  }
+  async onShow() {
+    // 判断新的一天
+    let oldTime = wepy.getStorageSync('nowTime') || 0;
+    let data = new Date();
+    let y = data.getFullYear().toString();
+    let m =
+      data.getMonth() + 1 < 10
+        ? '0' + (data.getMonth() + 1)
+        : data.getMonth() + 1;
+    let d = data.getDate() < 10 ? '0' + data.getDate() : data.getDate();
+    let nowTime = y + m + d;
+    wepy.setStorageSync('nowTime', nowTime);
+    // 缓存存在时共3次
+    let showNum = wepy.getStorageSync('showNum');
+    if (showNum == '') {
+      showNum = 0;
+    }
+    if (nowTime - oldTime > 0) {
+      wepy.setStorageSync('newDay', true);
+      showNum++;
+      wepy.setStorageSync('showNum', showNum);
+      // 新的一天点击广告关闭会拉起支付
+      wepy.setStorageSync('adCallPay', true);
+    } else {
+      wepy.setStorageSync('newDay', false);
+    }
+  }
+}
+</script>
