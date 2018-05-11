@@ -84,6 +84,7 @@ let isFast = true;
 function xhNavigateTo(url, openType = "") {
   if (isFast) {
     isFast = false;
+    // console.log(isFast);
     if (openType == 'redirect') {
       wx.redirectTo({
         url: url
