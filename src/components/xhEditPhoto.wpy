@@ -1,16 +1,12 @@
 <style lang="less">
-.add-photo-page {
-  .form-group {
-    padding: 20rpx 1em;
-    background-color: #fff;
-    margin: 42rpx 0;
-  }
-  input {
-    height: 1.6rem;
-  }
-  textarea {
-    min-height: 6em;
-  }
+.xh-edit-photo-box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100vh;
+  background: #ffffff;
   .form-photo-group {
     padding: 40rpx 1em 20rpx 1em;
     background-color: #fff;
@@ -27,7 +23,7 @@
       background-repeat: no-repeat;
       background-size: cover;
       margin: 0 20rpx 24rpx 20rpx;
-      .item-img {
+      .add-item-img {
         display: block;
         width: 100%;
         height: 130rpx;
@@ -76,37 +72,24 @@
       transform: translateX(-50%);
     }
   }
-
-  .submit-btn {
-    position: relative;
-    width: 60%;
-    border-radius: 0.3em;
-    line-height: 2.4em;
-    text-align: center;
-    margin: 3em auto;
-    background-color: #f23030;
-    color: #fff;
-  }
-  .submit-btn button {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0;
+  .close-btn {
+    position: fixed;
+    bottom: 20rpx;
+    left: 5%;
+    width: 90%;
+    height: 70rpx;
+    line-height: 70rpx;
+    background: lightcyan;
   }
 }
 </style>
-<!-- 新增相册page -->
 <template>
-<view class="add-photo-page">
-  <!-- <div @tap="downImg">图片保存到相册</div> -->
-  <!-- <div @tap="downVideo">视频保存到相册</div> -->
-  <form bindsubmit="formSubmit">
+  <!-- 香哈编辑照片弹窗组件page -->
+  <view class="xh-edit-photo-box" wx:if="{{showMenuBox}}">
       <view class="form-photo-group">
         <block wx:if="{{photosList.length > 0}}">
           <view wx:for="{{photosList}}" wx:key="index" class="photo-preview">
-            <image src="{{item}}" class="item-img"></image>
+            <image src="{{item}}" class="add-item-img"></image>
             <view class="handle-box">
               <view class="move-left" @tap="move('left',{{index}})">⬅️</view>
               <view class="del-btn" @tap="removePhoto(index)">X</view>
@@ -116,39 +99,29 @@
         </block>
         <view wx:if="{{photosList.length <9}}" class="plus photo-preview" @tap="addPhoto"></view>
       </view>
-      <view class="form-submit-group">
-        <view class="submit-btn">
-          <button form-type="submit"></button>
-          <text>立即创建</text>
-        </view>
-      </view>
-    </form>
-</view>
+      <button class="close-btn clear-btn" form-type="submit" @tap="close">关闭</button>
+  </view>
 </template>
 <script>
 import wepy from "wepy";
-import util from "../utils/util";
-export default class Index extends wepy.page {
-  config = {
-    navigationBarTitleText: "新增相册"
+import { wxRequest } from "../utils/wxRequest";
+import tip from "../utils/tip";
+export default class XHEditPhoto extends wepy.component {
+  props = {
+    showMenuBox: {
+      type: Boolean,
+      default: false
+    }
   };
-  components = {};
   data = {
-    imgUrl: {
-      url: "",
-      class: ""
-    },
-    photosList: []
+    photosList: ["../images/1.jpg", "../images/2.jpg"]
   };
 
   onLoad() {
     let that = this;
   }
-  computed = {};
+
   methods = {
-    navTo() {
-      util.xhNavigateTo("photo");
-    },
     //添加图片
     addPhoto() {
       let that = this;
@@ -162,6 +135,8 @@ export default class Index extends wepy.page {
         .then(res => {
           that.photosList = imagesList.concat(res.tempFilePaths);
           that.$apply();
+          // console.log( that.photosList);
+
           res.tempFilePaths.forEach((item, index) => {
             wepy
               .uploadFile({
@@ -190,40 +165,14 @@ export default class Index extends wepy.page {
     removePhoto(i) {
       this.photosList.splice(i, 1);
     },
-    downImg() {
-      console.log("333");
-      wx.downloadFile({
-        url:
-          "https://s1.cdn.xiangha.com/caipu/201608/0818/08184539308.jpg/NjAweDMwMA", //仅为示例，并非真实的资源
-        success: function(res) {
-          console.log("ok");
-          wx.saveImageToPhotosAlbum({
-            filePath: res.tempFilePath,
-            success: function(res) {
-              console.log(res);
-            },
-            fail: function(res) {
-              console.log(res);
-              console.log("fail");
-            }
-          });
-        },
-        fail: function(res) {
-          console.log("err");
-        }
-      });
+    close() {
+      this.$emit("closeMenuBox"); // 隐藏弹窗
     },
-    downVideo() {
-      console.log("333");
-      wx.saveVideoToPhotosAlbum({
-        filePath:
-          "https://v4.cdn.xiangha.com/video/caipu/201705/1115/s/591416d346ec6/eGgzNjBw.m3u8?v=1.1&sign=4742cda39ea937a84e78f8beb38a3093&t=5af2c9f8",
-        success(res) {
-          console.log(res.errMsg);
-        }
-      });
+    submit(e) {
+      wxRequest("/DishMenus/Main2/Public/addFormIds", {
+        formIds: e.detail.formId
+      }).then(res => {});
     }
   };
-  events = {};
 }
 </script>

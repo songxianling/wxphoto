@@ -28,9 +28,9 @@ import wepy from "wepy";
 import { wxRequest } from "../utils/wxRequest.js";
 export default class XHmusic extends wepy.component {
   props = {
-    model: {
-      type: Object,
-      default: {}
+    musicSrc: {
+      type: String,
+      default: ""
     },
     musicStop: {
       type: Boolean,
@@ -49,8 +49,7 @@ export default class XHmusic extends wepy.component {
     that.innerAudioContext = wx.createInnerAudioContext();
     that.innerAudioContext.autoplay = true;
     that.innerAudioContext.loop = true;
-    that.innerAudioContext.src =
-      "http://m10.music.126.net/20180510185424/45f83d58118ef2d0837568e13453aefb/ymusic/ec9a/2853/5fec/168d02eeaa3a6e0499e5e7bbdf982ee3.mp3";
+    that.innerAudioContext.src = that.musicSrc;
     that.innerAudioContext.onPlay(() => {
       that.musicRotateClass = "rotate-360";
       that.$apply();
@@ -65,7 +64,11 @@ export default class XHmusic extends wepy.component {
       this.innerAudioContext.destroy();
     }
   };
-
+  watch = {
+    musicSrc(musicSrc) {
+      this.innerAudioContext.src = musicSrc;
+    }
+  };
   methods = {
     handleMusic() {
       let that = this;

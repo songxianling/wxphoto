@@ -1,0 +1,230 @@
+<style lang="less">
+.xh-select-pop-box {
+  .menu-info-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    width: 100%;
+    height: 100vh;
+    background: #ffffff;
+    .switch-nav {
+      position: fixed;
+      top: 0;
+      z-index: 20;
+      background: #ffffff;
+      white-space: nowrap;
+      .wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        // padding: 22rpx 0 16rpx 40rpx;
+        .item-tab {
+          flex: 1;
+          display: inline-block;
+          padding: 0 26rpx;
+          // width: 118rpx;
+          height: 50rpx;
+          line-height: 50rpx;
+          // margin-top: 16rpx;
+          text-align: center;
+          font-size: 28rpx;
+          color: #999999;
+          &.active {
+            border-bottom: 2px solid #f23030;
+            color: #f23030;
+          }
+        }
+      }
+    }
+    .theme-list-box {
+      margin-top: 60rpx;
+      padding: 0 40rpx;
+      .item-theme {
+        float: left;
+        width: 30%;
+        height: 100rpx;
+        line-height: 100rpx;
+        margin-top: 20rpx;
+        border: 1px solid #f23030;
+        box-sizing: border-box;
+      }
+      .item-theme:nth-child(3n + 2) {
+        margin: 20rpx 5% 0;
+      }
+      .item-music {
+        width: 100%;
+        height: 80rpx;
+        line-height: 80rpx;
+        padding: 0 30rpx;
+        text-align: left;
+        box-sizing: border-box;
+        border-radius: 0;
+        border-bottom: 1px solid #ccc;
+      }
+    }
+    .close-btn {
+      position: fixed;
+      bottom: 20rpx;
+      left: 5%;
+      width: 90%;
+      height: 70rpx;
+      line-height: 70rpx;
+      background: lightcyan;
+    }
+  }
+}
+</style>
+<template>
+  <!-- 香哈选择弹窗组件page -->
+  <view class="xh-select-pop-box" wx:if="{{showMenuBox}}">
+      <view class="menu-info-box">
+      <!-- 头部选项 -->
+      <scroll-view class="switch-nav" scroll-x scroll-with-animation scroll-left="{{scrollLeft}}">
+        <view scroll-x class="wrapper">
+          <block wx:for="{{tabList}}" wx:key="{{item.index}}" >
+              <view class="item-tab {{acIndex == index ? 'active' : ''}}" @tap="changeTab({{index}},{{item.type}})">
+                {{item.title}}
+              </view>
+          </block>
+        </view>
+      </scroll-view>
+      <!-- 主题列表 -->
+      <view class="theme-list-box clearfix">
+        <!-- 主题 -->
+        <block wx:if="{{showType == 'theme'}}">
+          <button class="clear-btn item-theme" wx:for="{{list}}" wx:key="{{index}}" @tap="choose">
+            {{item.name}}
+          </button>
+        </block>
+        <!-- BGM -->
+        <block wx:if="{{showType == 'music'}}">
+          <button class="clear-btn item-music" wx:for="{{list}}" wx:key="{{index}}" @tap="choose({{item.src}})">
+            {{item.name}}
+          </button>
+        </block>
+        <!-- 编辑照片 -->
+        <block wx:if="{{showType == 'photo'}}">
+          <view wx:for="{{photosList}}" wx:key="index" class="photo-preview">
+            <image src="{{item}}" class="item-img"></image>
+            <view class="handle-box">
+              <view class="move-left" @tap="move('left',{{index}})">⬅️</view>
+              <view class="del-btn" @tap="removePhoto(index)">X</view>
+              <view class="move-right" @tap="move('right',{{index}})">➡️</view>
+            </view>
+          </view>
+        </block>
+      </view>
+      <button class="close-btn clear-btn" form-type="submit" @tap="close">关闭</button>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from "wepy";
+import { wxRequest } from "../utils/wxRequest";
+import tip from "../utils/tip";
+export default class XHSelectPop extends wepy.component {
+  props = {
+    showMenuBox: {
+      type: Boolean,
+      default: false
+    },
+    showType: {
+      type: String,
+      default: ""
+    },
+    tabList: {
+      type: Array,
+      default: ""
+    }
+  };
+  data = {
+    acIndex: 0,
+    tType: "", // tab所选类型
+    list: "" // 列表集合
+  };
+
+  onLoad() {
+    let that = this;
+
+  }
+  watch = {
+    showMenuBox(showMenuBox) {
+      if (showMenuBox) {
+        console.log(`子组件${this.showType}`);
+        this.tType = this.tabList[0].type;
+        tip.loading();
+        setTimeout(() => {
+          this.getList();
+        }, 300);
+      }
+    }
+  };
+
+  async getList() {
+    let that = this;
+    if (that.showType == "theme") {
+      console.log("展示主题");
+      that.list = [
+        { name: `主题${that.tType}` },
+        { name: `主题${that.tType}` },
+        { name: `主题${that.tType}` },
+        { name: `主题${that.tType}` },
+        { name: `主题${that.tType}` },
+        { name: `主题${that.tType}` }
+      ];
+      that.$apply();
+    } else if (that.showType == "music") {
+      console.log("展示bgm");
+      that.list = [
+        {
+          name: `音乐当你老了${that.tType}`,
+          src:
+            "http://m10.music.126.net/20180514155844/9075f17494007d3b24e006a3bea57969/ymusic/0b8c/4ea6/c957/ddf46174d597d368111db3ff9fbdaa7a.mp3"
+        },
+        {
+          name: `音乐风吹麦浪${that.tType}`,
+          src:
+            "http://m10.music.126.net/20180514162019/30b58f7cd2b80e1484346a049b0e9cad/ymusic/b687/bb7f/bcbc/416486b5e7258c4ac2982d6f33f5dca0.mp3"
+        },
+        { name: `音乐${that.tType}` },
+        { name: `音乐${that.tType}` },
+        { name: `音乐${that.tType}` },
+        { name: `音乐${that.tType}` }
+      ];
+      that.$apply();
+    }
+    tip.loaded();
+  }
+  methods = {
+    close() {
+      this.list = '';
+      this.$emit("closeMenuBox"); // 隐藏弹窗
+    },
+    // 操作选项
+    changeTab(index, tType) {
+      this.acIndex = index;
+      this.tType = tType;
+      tip.loading();
+      this.getList();
+    },
+    // 选择主题
+    choose(data) {
+      let that = this;
+      that.acIndex = 0;
+      // that.$emit("closeMenuBox", "theme"); // 隐藏弹窗
+      if (that.showType == "theme") {
+        that.$emit("closeMenuBox"); // 隐藏弹窗
+      }
+      if (that.showType == "music") {
+        that.$emit("closeMenuBox", "music", data); // 隐藏弹窗
+      }
+    },
+    submit(e) {
+      wxRequest("/DishMenus/Main2/Public/addFormIds", {
+        formIds: e.detail.formId
+      }).then(res => {});
+    }
+  };
+}
+</script>

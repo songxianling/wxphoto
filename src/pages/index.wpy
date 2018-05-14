@@ -75,21 +75,14 @@
     background: limegreen;
     color: #ffffff;
   }
-  .clear-btn {
-    background: #ffffff;
-    padding: 0;
-    margin: 0;
-    font-size: 30rpx;
-    box-sizing: content-box;
-    line-height: 1;
-  }
 }
 </style>
 <!-- 相册首页page -->
 <template>
 <view class="index-page">
   <view class="user-info">
-    <image class="user-header" src="{{userInfo.avatarUrl}}"></image>
+    <image class="user-header" wx:if="{{userInfo}}" src="{{userInfo.avatarUrl}}"></image>
+    <button open-type="getUserInfo" wx:else  @getuserinfo="goSignIn">点击登录</button>
   </view>
   <form @submit="submit" report-submit='true'>
     <view class="photo-list">
@@ -137,6 +130,7 @@ export default class Index extends wepy.page {
         class: "rotate2"
       }
     ],
+    isReturn: true, // 是否返回
     userInfo: ""
   };
 
@@ -231,6 +225,29 @@ export default class Index extends wepy.page {
         success(res) {
           console.log(res.errMsg);
         }
+      });
+    },
+    goSignIn(res) {
+      let that = this;
+      if (!that.isReturn) {
+        return;
+      }
+      let userinfo = res.detail.userInfo;
+      if (!userinfo) {
+        return;
+      }
+      that.isReturn = false;
+      wepy.login().then(res => {
+        // console.log("login数据如下");
+        // console.log(res);
+        let resData = res;
+        wepy.getUserInfo().then(res => {
+          wepy.setStorageSync("userInfo", res.userInfo);
+          that.userInfo = wepy.getStorageSync("userInfo");
+          that.$apply();
+          // console.log("getUserInfo数据如下");
+          // console.log(res.userInfo);
+        });
       });
     },
     submit(e) {
