@@ -24,6 +24,13 @@
     margin: auto;
     border: 10rpx solid yellowgreen;
     z-index: 11;
+    text{
+      position: absolute;
+      bottom: 20rpx;
+      width: 100%;
+      text-align: center;
+      color: salmon;
+    }
   }
   .bottom-menu {
     position: fixed;
@@ -49,9 +56,11 @@
 <template>
 <view class="photo-page">
   <form @submit="submit" report-submit='true'>
-    <image class="bg-img" src="../images/bg.gif"></image>
+    <image class="bg-img" src="{{bgImg}}"></image>
     <XHMusic :musicStop.sync="musicStop" :musicSrc.sync="musicSrc"></XHMusic>
-    <image class="item-img {{imgUrl.class}}" src="{{imgUrl.url}}" mode="widthFix"></image>
+    <image class="item-img {{imgUrl.class}}" src="{{imgUrl.url}}" mode="widthFix">
+      <text>最美的期待</text>
+    </image>
     <!-- 底部菜单栏 -->
     <view class="bottom-menu">
       <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('theme')">模版</button>
@@ -67,6 +76,7 @@
     <block wx:if="{{showType == 'photo'}}">
       <XHEditPhoto :showMenuBox.sync="showMenuBox"></XHEditPhoto>
     </block>
+    <!-- <XHPhotoText></XHPhotoText> -->
   </form>
 </view>
 </template>
@@ -77,6 +87,7 @@ import { wxRequest } from "../utils/wxRequest";
 import XHMusic from "../components/xhMusic";
 import XHSelectPop from "../components/xhSelectPop";
 import XHEditPhoto from "../components/xhEditPhoto";
+import XHPhotoText from "../components/xhPhotoText";
 
 export default class Photo extends wepy.page {
   config = {
@@ -85,7 +96,8 @@ export default class Photo extends wepy.page {
   components = {
     XHMusic: XHMusic,
     XHSelectPop: XHSelectPop,
-    XHEditPhoto: XHEditPhoto
+    XHEditPhoto: XHEditPhoto,
+    XHPhotoText:XHPhotoText
   };
   data = {
     activeIndex: 0,
@@ -94,76 +106,115 @@ export default class Photo extends wepy.page {
       { title: "最热", type: "hot" },
       { title: "怀旧", type: "rem" }
     ],
+    bgImg:'../images/bg0.gif',
     imgUrl: {
       url: "",
       class: ""
     },
-    imgList: [
-      {
-        url: "../images/1.jpg",
-        class:
-          "bounceInDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
-      },
-      {
-        url: "../images/2.jpg",
-        class:
-          "bounceOutDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
-      },
-      {
-        url: "../images/3.jpeg",
-        class:
-          "rollIn animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
-      },
-      {
-        url: "../images/4.jpeg",
-        class:
-          "rotateOutDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
-      },
-      {
-        url: "../images/5.jpg",
-        class:
-          "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
-      },
-      {
-        url: "../images/6.jpg",
-        class:
-          "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
-      },
-      {
-        url: "../images/6.jpg",
-        class:
-          "zoomOutLeft animated-time-5 animated-time-function-ease animation-iteration-count"
-      }
-    ],
+    imgList: {
+      code1: [
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/1.jpg",
+          class:
+            "bounceInDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/2.jpg",
+          class:
+            "bounceOutDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/3.jpeg",
+          class:
+            "rollIn animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/4.jpeg",
+          class:
+            "rotateOutDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/5.jpg",
+          class:
+            "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/6.jpg",
+          class:
+            "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
+        }
+      ],
+      code2: [
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/7.jpg",
+          class:
+            "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/8.jpg",
+          class:
+            "zoomOutRight animated-time-5 animated-time-function-ease animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/9.jpg",
+          class:
+            "flipInX animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/10.jpg",
+          class:
+            "flipInY animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/11.jpg",
+          class:
+            "rotateIn animated-time-5 animated-time-function-ease animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/12.jpg",
+          class:
+            "slideOutLeft animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/13.jpg",
+          class:
+            "slideOutRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        }
+      ]
+    },
     photosList: [], // 照片
     musicSrc:
-      "http://m10.music.126.net/20180514170034/7138ba6e3418fb2513920853cedff9cd/ymusic/5f1d/b9b6/9935/86968dfaba861b5f0524b850a0bc7163.mp3",
+      "http://m10.music.126.net/20180515135457/20dd4e49c8b79ff45002386010883031/ymusic/82f2/0dde/bc1c/e2f846c452d35b73d2db67fd51984832.mp3",
     // 音乐源
     musicStop: false,
+    photoTimer:'', // 动画定时器
     showMenuBox: false, // 显示菜单点击后的盒子
     showType: "theme", // 显示盒子的类型
     tType: "", // 主题类型
-    themeList: "" // 主题列表集合
   };
 
-  onLoad() {
+  onLoad(options) {
     let that = this;
     that.tType = that.tabList[0].type;
+    let idx = `code${options.id}`;
+    let curImgList = that.imgList[idx];
     let i = 0;
-    that.imgUrl = that.imgList[i];
-    setInterval(() => {
+    that.imgUrl = curImgList[i];
+    that.photoTimer = setInterval(() => {
       i++;
-      if (i > that.imgList.length - 1) {
+      if (i > curImgList.length - 1) {
         i = 0;
       }
-      that.imgUrl = that.imgList[i];
+      that.imgUrl = curImgList[i];
       that.$apply();
     }, 5000);
   }
   // 返回
   onUnload() {
     let that = this;
+    console.log(7878);
     that.musicStop = true;
+    clearInterval(that.photoTimer);
   }
 
   computed = {};
@@ -261,6 +312,10 @@ export default class Photo extends wepy.page {
     closeMenuBox(type, data) {
       let that = this;
       that.showMenuBox = !that.showMenuBox;
+      if(type == 'theme'){
+        that.bgImg = `../images/bg${data}.gif`;
+        that.$apply();
+      }
       if (type == "music") {
         that.musicSrc = data;
         that.$apply();

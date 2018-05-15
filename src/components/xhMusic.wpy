@@ -61,10 +61,9 @@ export default class XHmusic extends wepy.component {
   }
   watch = {
     musicStop(musicStop) {
+      console.log(999);
       this.innerAudioContext.destroy();
-    }
-  };
-  watch = {
+    },
     musicSrc(musicSrc) {
       this.innerAudioContext.src = musicSrc;
     }

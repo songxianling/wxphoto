@@ -93,7 +93,7 @@
       <view class="theme-list-box clearfix">
         <!-- 主题 -->
         <block wx:if="{{showType == 'theme'}}">
-          <button class="clear-btn item-theme" wx:for="{{list}}" wx:key="{{index}}" @tap="choose">
+          <button class="clear-btn item-theme" wx:for="{{list}}" wx:key="{{index}}" @tap="choose({{index}})">
             {{item.name}}
           </button>
         </block>
@@ -146,7 +146,6 @@ export default class XHSelectPop extends wepy.component {
 
   onLoad() {
     let that = this;
-
   }
   watch = {
     showMenuBox(showMenuBox) {
@@ -185,12 +184,28 @@ export default class XHSelectPop extends wepy.component {
         {
           name: `音乐风吹麦浪${that.tType}`,
           src:
-            "http://m10.music.126.net/20180514162019/30b58f7cd2b80e1484346a049b0e9cad/ymusic/b687/bb7f/bcbc/416486b5e7258c4ac2982d6f33f5dca0.mp3"
+            "http://m10.music.126.net/20180515100804/e35fc7ad485c5c875359ad1d1024e733/ymusic/b687/bb7f/bcbc/416486b5e7258c4ac2982d6f33f5dca0.mp3"
         },
-        { name: `音乐${that.tType}` },
-        { name: `音乐${that.tType}` },
-        { name: `音乐${that.tType}` },
-        { name: `音乐${that.tType}` }
+        {
+          name: `音乐刚好遇见你${that.tType}`,
+          src:
+            "http://m10.music.126.net/20180515102424/d5fc10a941dc716bc4f0a35016fdef7b/ymusic/3466/f88c/165c/3520e5664afd420989e88bc3a694c237.mp3"
+        },
+        {
+          name: `音乐我要吃肉肉${that.tType}`,
+          src:
+            "http://m10.music.126.net/20180515102532/de2ec8c24feb791a427be5347c6e2e66/ymusic/09bf/159f/b3f1/99357ee897229ad6b69947a67fe4eeab.mp3"
+        },
+        {
+          name: `音乐追光者${that.tType}`,
+          src:
+            "http://m10.music.126.net/20180515102559/010d592f22593fef25f6739dca10249f/ymusic/9313/cfac/35ad/332d8257716efd86d075809e61cfd5d5.mp3"
+        },
+        {
+          name: `音乐起风了${that.tType}`,
+          src:
+            "http://m10.music.126.net/20180515102729/fd10a615b43e105a6be1c149de41a4bd/ymusic/96c5/507f/12cf/3de773142bac9bc6c3fb646c00dadd0d.mp3"
+        }
       ];
       that.$apply();
     }
@@ -198,7 +213,7 @@ export default class XHSelectPop extends wepy.component {
   }
   methods = {
     close() {
-      this.list = '';
+      this.list = "";
       this.$emit("closeMenuBox"); // 隐藏弹窗
     },
     // 操作选项
@@ -208,13 +223,16 @@ export default class XHSelectPop extends wepy.component {
       tip.loading();
       this.getList();
     },
-    // 选择主题
+    // 选择主题bgm
     choose(data) {
       let that = this;
       that.acIndex = 0;
       // that.$emit("closeMenuBox", "theme"); // 隐藏弹窗
       if (that.showType == "theme") {
-        that.$emit("closeMenuBox"); // 隐藏弹窗
+        if (data > 2) {
+          data = data - 3;
+        }
+        that.$emit("closeMenuBox", "theme", data); // 隐藏弹窗
       }
       if (that.showType == "music") {
         that.$emit("closeMenuBox", "music", data); // 隐藏弹窗
