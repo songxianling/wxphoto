@@ -114,7 +114,7 @@ export default class XHEditPhoto extends wepy.component {
     }
   };
   data = {
-    photosList: ["../images/1.jpg", "../images/2.jpg"]
+    photosList: ["https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/1.jpg", "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/2.jpg"]
   };
 
   onLoad() {

@@ -92,7 +92,7 @@
         <view class="r-box">
           <view class="name">{{item.title}}</view>
           <button class="open-btn clear-btn" @tap="navTo('photo?id={{item.id}}')">打开</button>
-          <button class="share-btn clear-btn" open-type="share">分享</button>
+          <button class="share-btn clear-btn" open-type="share" @tap="shareFn({{index}})">分享</button>
         </view>
       </button>
     </view>
@@ -116,15 +116,15 @@ export default class Index extends wepy.page {
     },
     photoList: [
       {
-        img: "../images/1.jpg",
+        img: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382690602&di=39607c45bc5611f52ea2062b202fac61&imgtype=0&src=http%3A%2F%2Fu.candou.com%2Fs%2F500%2F2017%2F1028%2F1509182898720.jpg",
         title: "最是那一低头的娇羞",
-        path: "/photo?id=1",
+        path: "/pages/photo?id=1&fromShare=true",
         id: 1
       },
       {
-        img: "../images/12.jpg",
+        img: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3020957609,1755005609&fm=27&gp=0.jpg",
         title: "我是一块望夫石～～啦啦啦",
-        path: "/photo?id=2",
+        path: "/pages/photo?id=2&fromShare=true",
         id: 2
       }
     ],
@@ -166,9 +166,15 @@ export default class Index extends wepy.page {
         });
       });
     },
+    shareFn(index){
+      console.log(index);
+      this.shareData = this.photoList[index];
+    },
     onShareAppMessage: function(res) {
       let that = this;
       that.shareData = that.photoList[res.target.dataset.wpysharefnA];
+      console.log(res);
+
       if (res.from === "button") {
         // 来自页面内转发按钮
         // console.log(res.target);

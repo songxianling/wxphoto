@@ -22,7 +22,8 @@
     // width: 600rpx;
     // height: 800rpx;
     margin: auto;
-    border: 10rpx solid yellowgreen;
+    padding: 10rpx;
+    border: 1px solid #ffffff;
     z-index: 11;
     text{
       position: absolute;
@@ -62,13 +63,22 @@
       <text>最美的期待</text>
     </image>
     <!-- 底部菜单栏 -->
-    <view class="bottom-menu">
-      <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('theme')">模版</button>
-      <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('music')">音乐</button>
-      <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('photo')">相片</button>
-      <button class="item-menu clear-btn" form-type="submit">文字</button>
-      <button class="item-menu clear-btn" form-type="submit">保存</button>
-    </view>
+    <block wx:if="{{!fromShare}}">
+      <view class="bottom-menu">
+        <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('theme')">模版</button>
+        <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('music')">音乐</button>
+        <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('photo')">相片</button>
+        <button class="item-menu clear-btn" form-type="submit">文字</button>
+        <button class="item-menu clear-btn" form-type="submit">保存</button>
+      </view>
+    </block>
+    <block wx:if="{{fromShare}}">
+      <view class="bottom-menu">
+        <button class="item-menu clear-btn" form-type="submit" @tap="navTo('index')">我也要制作</button>
+        <button class="item-menu clear-btn" form-type="submit">我也要分享</button>
+      </view>
+    </block>
+
     <!-- 底部菜单栏点击后弹窗 -->
     <block wx:if="{{showType == 'theme' || showType == 'music'}}">
       <XHSelectPop :showMenuBox.sync="showMenuBox" :showType.sync="showType" :tabList.sync="tabList"></XHSelectPop>
@@ -83,6 +93,7 @@
 <script>
 import wepy from "wepy";
 import tip from "../utils/tip";
+import util from "../utils/util";
 import { wxRequest } from "../utils/wxRequest";
 import XHMusic from "../components/xhMusic";
 import XHSelectPop from "../components/xhSelectPop";
@@ -106,85 +117,191 @@ export default class Photo extends wepy.page {
       { title: "最热", type: "hot" },
       { title: "怀旧", type: "rem" }
     ],
-    bgImg:'../images/bg0.gif',
+    bgImg:'https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/bg0.gif',
     imgUrl: {
       url: "",
       class: ""
     },
+    // imgList: {
+    //   code1: [
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/1.jpg",
+    //       class:
+    //         "bounceInDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/2.jpg",
+    //       class:
+    //         "bounceOutDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/3.jpeg",
+    //       class:
+    //         "rollIn animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/4.jpeg",
+    //       class:
+    //         "rotateOutDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/5.jpg",
+    //       class:
+    //         "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/6.jpg",
+    //       class:
+    //         "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
+    //     }
+    //   ],
+    //   code2: [
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/7.jpg",
+    //       class:
+    //         "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/8.jpg",
+    //       class:
+    //         "zoomOutRight animated-time-5 animated-time-function-ease animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/9.jpg",
+    //       class:
+    //         "flipInX animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/10.jpg",
+    //       class:
+    //         "flipInY animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/11.jpg",
+    //       class:
+    //         "rotateIn animated-time-5 animated-time-function-ease animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/12.jpg",
+    //       class:
+    //         "slideOutLeft animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+    //     },
+    //     {
+    //       url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/13.jpg",
+    //       class:
+    //         "slideOutRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+    //     }
+    //   ]
+    // },
     imgList: {
       code1: [
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/1.jpg",
+          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382447715&di=cd0be3c2778e18e8a43704c89e7dee11&imgtype=0&src=http%3A%2F%2Fcms-bucket.nosdn.127.net%2Fa1d65d58311b4e9fb563c052f7b8231920180428195339.png%3FimageView%26thumbnail%3D550x0",
           class:
             "bounceInDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/2.jpg",
+          url: "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2787198840,1615468195&fm=27&gp=0.jpg",
+          class:
+            "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
+        },
+        {
+          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382555898&di=8f7c0c77b92693af8bef57d1b9a07ccb&imgtype=0&src=http%3A%2F%2Fimg-2.sfcdn.org%2Farticles%2Fe1c3e8be755a6ed67b724cd1af6e4a36.jpg",
           class:
             "bounceOutDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/3.jpeg",
+          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526977341&di=b8880b8d382abbf4bb13ceb01ca0cd8b&imgtype=jpg&er=1&src=http%3A%2F%2F05.imgmini.eastday.com%2Fmobile%2F20180428%2F20180428202041_56b2d2e7ebb5b85386603e3722f40481_1.jpeg",
           class:
             "rollIn animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/4.jpeg",
+          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526977341&di=b8880b8d382abbf4bb13ceb01ca0cd8b&imgtype=jpg&er=1&src=http%3A%2F%2F05.imgmini.eastday.com%2Fmobile%2F20180428%2F20180428202041_56b2d2e7ebb5b85386603e3722f40481_1.jpeg",
           class:
             "rotateOutDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/5.jpg",
+          url: "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2249424257,1222395782&fm=27&gp=0.jpg",
           class:
             "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/6.jpg",
+          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382952257&di=1e42b7d74d1049b38beba68237780824&imgtype=0&src=http%3A%2F%2F06.imgmini.eastday.com%2Fmobile%2F20180429%2F20180429221435_fdf7d30eaca11783268d1357dc082075_1.jpeg",
           class:
             "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
+        },
+        {
+          url: "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2170158036,2422287650&fm=11&gp=0.jpg",
+          class:
+            "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2406702547,1731905831&fm=27&gp=0.jpg",
+          class:
+            "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
+        },
+        {
+          url: "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2236870021,3313944743&fm=11&gp=0.jpg",
+          class:
+            "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382555898&di=8f7c0c77b92693af8bef57d1b9a07ccb&imgtype=0&src=http%3A%2F%2Fimg-2.sfcdn.org%2Farticles%2Fe1c3e8be755a6ed67b724cd1af6e4a36.jpg",
+          class:
+            "bounceOutDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         }
       ],
       code2: [
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/7.jpg",
+          url: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3212425299,191878791&fm=27&gp=0.jpg",
           class:
             "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/8.jpg",
+          url: "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2143125620,1125589885&fm=27&gp=0.jpg",
           class:
             "zoomOutRight animated-time-5 animated-time-function-ease animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/9.jpg",
+          url: "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4207370263,1352577499&fm=27&gp=0.jpg",
           class:
             "flipInX animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/10.jpg",
+          url: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1396533515,362010727&fm=27&gp=0.jpg",
           class:
             "flipInY animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/11.jpg",
+          url: "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=535633518,1411140921&fm=27&gp=0.jpg",
           class:
             "rotateIn animated-time-5 animated-time-function-ease animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/12.jpg",
+          url: "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3996349524,2185880547&fm=27&gp=0.jpg",
           class:
             "slideOutLeft animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/13.jpg",
+          url: "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1676849997,272064533&fm=27&gp=0.jpg",
           class:
             "slideOutRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2018357679,2850452241&fm=200&gp=0.jpg",
+          class:
+            "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+        },
+        {
+          url: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1377391150,4109612028&fm=27&gp=0.jpg",
+          class:
+            "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
         }
       ]
     },
-    photosList: [], // 照片
+    fromShare:false, // 来自分享
     musicSrc:
-      "http://m10.music.126.net/20180515135457/20dd4e49c8b79ff45002386010883031/ymusic/82f2/0dde/bc1c/e2f846c452d35b73d2db67fd51984832.mp3",
+      "http://m10.music.126.net/20180515155337/d6de9d5496f568c5efc7125293124262/ymusic/a201/7d78/e420/e12da94e22a825f422ddebdfc50e8520.mp3",
     // 音乐源
     musicStop: false,
     photoTimer:'', // 动画定时器
@@ -196,6 +313,8 @@ export default class Photo extends wepy.page {
   onLoad(options) {
     let that = this;
     that.tType = that.tabList[0].type;
+    // 是否显示操作按钮
+    that.fromShare = options.fromShare;
     let idx = `code${options.id}`;
     let curImgList = that.imgList[idx];
     let i = 0;
@@ -212,13 +331,15 @@ export default class Photo extends wepy.page {
   // 返回
   onUnload() {
     let that = this;
-    console.log(7878);
     that.musicStop = true;
     clearInterval(that.photoTimer);
   }
 
   computed = {};
   methods = {
+    navTo(url) {
+      util.xhNavigateTo(url);
+    },
     // 底部菜单点击事件
     handleMenu(type) {
       let that = this;
@@ -313,7 +434,7 @@ export default class Photo extends wepy.page {
       let that = this;
       that.showMenuBox = !that.showMenuBox;
       if(type == 'theme'){
-        that.bgImg = `../images/bg${data}.gif`;
+        that.bgImg = `https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/bg${data}.gif`;
         that.$apply();
       }
       if (type == "music") {
