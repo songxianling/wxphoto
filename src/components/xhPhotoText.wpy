@@ -1,9 +1,10 @@
 <style lang="less">
+@import '../styles/base.less';
 .xh-photo-text-box {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 20;
+  z-index: 99;
   width: 100%;
   height: 100vh;
   background: #ffffff;
@@ -46,7 +47,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        .con{
+        .con {
           position: relative;
           width: 100%;
           height: 100%;
@@ -77,22 +78,37 @@
       }
     }
   }
-  .close-btn {
+  .bot-handle-box {
     position: fixed;
     bottom: 20rpx;
     left: 5%;
     width: 90%;
     height: 70rpx;
     line-height: 70rpx;
-    background: lightcyan;
+    .close-btn {
+      float: left;
+      width: 40%;
+      height: 70rpx;
+      line-height: 70rpx;
+      background: @base-color;
+      color: #ffffff;
+      border: 1px solid transparent;
+    }
+    .update-btn {
+      float: right;
+      width: 40%;
+      height: 70rpx;
+      line-height: 70rpx;
+      color: @base-color;
+      border: 1px solid @base-color;
+    }
   }
 }
 </style>
 <template>
   <!-- 香哈编辑照片弹窗组件page -->
-  <view class="xh-photo-text-box">
+  <view class="xh-photo-text-box" wx:if="{{showMenuBox}}">
     <!-- 主标题 -->
-    <image src="https://raw.githubusercontent.com/songxianling/wxphoto/master/src/images/2.jpg"></image>
     <view class="main-title-box">
       <view class="title">相册主标题</view>
       <textarea placeholder="主标题内容;不要太多字哦～～～" class="title-con"></textarea>
@@ -102,9 +118,9 @@
       <view class="title">给相片写个故事吧</view>
       <block wx:if="{{photosList.length > 0}}">
         <view wx:for="{{photosList}}" wx:key="index" class="photo-preview">
-          <image src="{{item}}" class="add-item-img"></image>
+          <image src="{{item.imgSrc}}" class="add-item-img"></image>
           <view class="handle-box">
-            <textarea class="con" placeholder="书写一段美好的故事"></textarea>
+            <input class="con" placeholder="书写一段美好的故事" value="{{item.title}}"></input>
             <view class="move-left" @tap="move('left',{{index}})">⬆️</view>
             <view class="del-btn" @tap="removePhoto(index)">X</view>
             <view class="move-right" @tap="move('right',{{index}})">⬇️</view>
@@ -112,7 +128,10 @@
         </view>
       </block>
     </view>
-    <button class="close-btn clear-btn" form-type="submit" @tap="close">关闭</button>
+    <view class="bot-handle-box">
+      <button class="close-btn clear-btn" form-type="submit" @tap="close">关闭</button>
+      <button class="update-btn clear-btn" form-type="submit" @tap="updata">完成</button>
+    </view>
   </view>
 </template>
 <script>
@@ -127,7 +146,23 @@ export default class XHPhotoText extends wepy.component {
     }
   };
   data = {
-    photosList: ["../images/1.jpg", "../images/2.jpg"]
+    photosList: [
+      {
+        imgSrc:
+          "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2168292475,1830968743&fm=11&gp=0.jpg",
+        title: "挑战；是我的目的～～"
+      },
+      {
+        imgSrc:
+          "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2713413922,3311065825&fm=11&gp=0.jpg",
+        title: "所有的巧合；皆是命中注定"
+      },
+      {
+        imgSrc:
+          "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3027019510,2766142961&fm=11&gp=0.jpg",
+        title: ""
+      }
+    ]
   };
 
   onLoad() {

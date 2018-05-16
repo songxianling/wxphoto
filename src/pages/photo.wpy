@@ -3,7 +3,12 @@
 .photo-page {
   width: 100%;
   height: 100vh;
-  background: violet;
+  background: url("https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=4010159320,2285676351&fm=27&gp=0.jpg");
+  background-size: 100% 100%;
+  &.page-bg-2 {
+    background: url("https://timgsa.baidu.com/timg?image&quality=80&size=b10000_10000&sec=1526379148&di=6146f826f14aba8299ec7aefe42935d5&src=http://pic.qiantucdn.com/58pic/25/71/23/5860a48b24df7_1024.jpg");
+    background-size: 100% 100%;
+  }
   .bg-img {
     position: absolute;
     top: 0;
@@ -25,7 +30,7 @@
     padding: 10rpx;
     border: 1px solid #ffffff;
     z-index: 11;
-    text{
+    text {
       position: absolute;
       bottom: 20rpx;
       width: 100%;
@@ -43,24 +48,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.3);
+    background: #3cbcea;
     .item-menu {
       flex: 1;
       height: 100rpx;
       line-height: 100rpx;
-      background: rgba(0, 0, 0, 0.3);
+      background: #3cbcea;
+      color: #ffffff;
     }
   }
 }
 </style>
 <!-- 相册page -->
 <template>
-<view class="photo-page">
+<view class="photo-page {{bg2 ? 'page-bg-2' : ''}}">
   <form @submit="submit" report-submit='true'>
     <image class="bg-img" src="{{bgImg}}"></image>
     <XHMusic :musicStop.sync="musicStop" :musicSrc.sync="musicSrc"></XHMusic>
     <image class="item-img {{imgUrl.class}}" src="{{imgUrl.url}}" mode="widthFix">
-      <text>最美的期待</text>
+      <text>{{imgUrl.title}}</text>
     </image>
     <!-- 底部菜单栏 -->
     <block wx:if="{{!fromShare}}">
@@ -68,7 +74,7 @@
         <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('theme')">模版</button>
         <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('music')">音乐</button>
         <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('photo')">相片</button>
-        <button class="item-menu clear-btn" form-type="submit">文字</button>
+        <button class="item-menu clear-btn" form-type="submit" @tap="handleMenu('text')">文字</button>
         <button class="item-menu clear-btn" form-type="submit">保存</button>
       </view>
     </block>
@@ -86,7 +92,9 @@
     <block wx:if="{{showType == 'photo'}}">
       <XHEditPhoto :showMenuBox.sync="showMenuBox"></XHEditPhoto>
     </block>
-    <!-- <XHPhotoText></XHPhotoText> -->
+    <block wx:if="{{showType == 'text'}}">
+      <XHPhotoText :showMenuBox.sync="showMenuBox"></XHPhotoText>
+    </block>
   </form>
 </view>
 </template>
@@ -102,13 +110,13 @@ import XHPhotoText from "../components/xhPhotoText";
 
 export default class Photo extends wepy.page {
   config = {
-    navigationBarTitleText: "最是那一低头的娇羞"
+    navigationBarTitleText: "RNG雄起简自豪"
   };
   components = {
     XHMusic: XHMusic,
     XHSelectPop: XHSelectPop,
     XHEditPhoto: XHEditPhoto,
-    XHPhotoText:XHPhotoText
+    XHPhotoText: XHPhotoText
   };
   data = {
     activeIndex: 0,
@@ -117,10 +125,13 @@ export default class Photo extends wepy.page {
       { title: "最热", type: "hot" },
       { title: "怀旧", type: "rem" }
     ],
-    bgImg:'https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/bg0.gif',
+    bg2: false,
+    bgImg:
+      "https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/bg0.gif",
     imgUrl: {
       url: "",
-      class: ""
+      class: "",
+      title: ""
     },
     // imgList: {
     //   code1: [
@@ -196,126 +207,158 @@ export default class Photo extends wepy.page {
     imgList: {
       code1: [
         {
-          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382447715&di=cd0be3c2778e18e8a43704c89e7dee11&imgtype=0&src=http%3A%2F%2Fcms-bucket.nosdn.127.net%2Fa1d65d58311b4e9fb563c052f7b8231920180428195339.png%3FimageView%26thumbnail%3D550x0",
+          url:
+            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382447715&di=cd0be3c2778e18e8a43704c89e7dee11&imgtype=0&src=http%3A%2F%2Fcms-bucket.nosdn.127.net%2Fa1d65d58311b4e9fb563c052f7b8231920180428195339.png%3FimageView%26thumbnail%3D550x0",
           class:
-            "bounceInDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+            "bounceInDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count",
+          title: "顺境简自豪"
         },
         {
-          url: "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2787198840,1615468195&fm=27&gp=0.jpg",
+          url:
+            "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2787198840,1615468195&fm=27&gp=0.jpg",
           class:
-            "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
+            "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count",
+          title: "逆境狂小狗"
         },
         {
-          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382555898&di=8f7c0c77b92693af8bef57d1b9a07ccb&imgtype=0&src=http%3A%2F%2Fimg-2.sfcdn.org%2Farticles%2Fe1c3e8be755a6ed67b724cd1af6e4a36.jpg",
+          url:
+            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382555898&di=8f7c0c77b92693af8bef57d1b9a07ccb&imgtype=0&src=http%3A%2F%2Fimg-2.sfcdn.org%2Farticles%2Fe1c3e8be755a6ed67b724cd1af6e4a36.jpg",
           class:
-            "bounceOutDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+            "bounceOutDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count",
+          title: "绝境Uzi"
         },
         {
-          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526977341&di=b8880b8d382abbf4bb13ceb01ca0cd8b&imgtype=jpg&er=1&src=http%3A%2F%2F05.imgmini.eastday.com%2Fmobile%2F20180428%2F20180428202041_56b2d2e7ebb5b85386603e3722f40481_1.jpeg",
+          url:
+            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526977341&di=b8880b8d382abbf4bb13ceb01ca0cd8b&imgtype=jpg&er=1&src=http%3A%2F%2F05.imgmini.eastday.com%2Fmobile%2F20180428%2F20180428202041_56b2d2e7ebb5b85386603e3722f40481_1.jpeg",
           class:
             "rollIn animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526977341&di=b8880b8d382abbf4bb13ceb01ca0cd8b&imgtype=jpg&er=1&src=http%3A%2F%2F05.imgmini.eastday.com%2Fmobile%2F20180428%2F20180428202041_56b2d2e7ebb5b85386603e3722f40481_1.jpeg",
+          url:
+            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526977341&di=b8880b8d382abbf4bb13ceb01ca0cd8b&imgtype=jpg&er=1&src=http%3A%2F%2F05.imgmini.eastday.com%2Fmobile%2F20180428%2F20180428202041_56b2d2e7ebb5b85386603e3722f40481_1.jpeg",
           class:
             "rotateOutDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2249424257,1222395782&fm=27&gp=0.jpg",
+          url:
+            "https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2249424257,1222395782&fm=27&gp=0.jpg",
           class:
             "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382952257&di=1e42b7d74d1049b38beba68237780824&imgtype=0&src=http%3A%2F%2F06.imgmini.eastday.com%2Fmobile%2F20180429%2F20180429221435_fdf7d30eaca11783268d1357dc082075_1.jpeg",
+          url:
+            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382952257&di=1e42b7d74d1049b38beba68237780824&imgtype=0&src=http%3A%2F%2F06.imgmini.eastday.com%2Fmobile%2F20180429%2F20180429221435_fdf7d30eaca11783268d1357dc082075_1.jpeg",
           class:
             "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
         },
         {
-          url: "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2170158036,2422287650&fm=11&gp=0.jpg",
+          url:
+            "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2170158036,2422287650&fm=11&gp=0.jpg",
           class:
             "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2406702547,1731905831&fm=27&gp=0.jpg",
+          url:
+            "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2406702547,1731905831&fm=27&gp=0.jpg",
           class:
             "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
         },
         {
-          url: "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2236870021,3313944743&fm=11&gp=0.jpg",
+          url:
+            "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2236870021,3313944743&fm=11&gp=0.jpg",
           class:
             "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382555898&di=8f7c0c77b92693af8bef57d1b9a07ccb&imgtype=0&src=http%3A%2F%2Fimg-2.sfcdn.org%2Farticles%2Fe1c3e8be755a6ed67b724cd1af6e4a36.jpg",
+          url:
+            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382555898&di=8f7c0c77b92693af8bef57d1b9a07ccb&imgtype=0&src=http%3A%2F%2Fimg-2.sfcdn.org%2Farticles%2Fe1c3e8be755a6ed67b724cd1af6e4a36.jpg",
           class:
             "bounceOutDown animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         }
       ],
       code2: [
         {
-          url: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3212425299,191878791&fm=27&gp=0.jpg",
+          url:
+            "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3212425299,191878791&fm=27&gp=0.jpg",
           class:
             "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
         },
         {
-          url: "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2143125620,1125589885&fm=27&gp=0.jpg",
+          url:
+            "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2143125620,1125589885&fm=27&gp=0.jpg",
           class:
             "zoomOutRight animated-time-5 animated-time-function-ease animation-iteration-count"
         },
         {
-          url: "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4207370263,1352577499&fm=27&gp=0.jpg",
+          url:
+            "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=4207370263,1352577499&fm=27&gp=0.jpg",
           class:
-            "flipInX animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+            "jackInTheBox animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1396533515,362010727&fm=27&gp=0.jpg",
+          url:
+            "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1396533515,362010727&fm=27&gp=0.jpg",
           class:
-            "flipInY animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
+            "jello animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=535633518,1411140921&fm=27&gp=0.jpg",
+          url:
+            "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=535633518,1411140921&fm=27&gp=0.jpg",
           class:
             "rotateIn animated-time-5 animated-time-function-ease animation-iteration-count"
         },
         {
-          url: "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3996349524,2185880547&fm=27&gp=0.jpg",
+          url:
+            "https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3996349524,2185880547&fm=27&gp=0.jpg",
           class:
             "slideOutLeft animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1676849997,272064533&fm=27&gp=0.jpg",
+          url:
+            "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1676849997,272064533&fm=27&gp=0.jpg",
           class:
             "slideOutRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2018357679,2850452241&fm=200&gp=0.jpg",
+          url:
+            "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=2018357679,2850452241&fm=200&gp=0.jpg",
           class:
             "rotateInDownRight animated-time-5 animated-time-function-ease-in-out animation-iteration-count"
         },
         {
-          url: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1377391150,4109612028&fm=27&gp=0.jpg",
+          url:
+            "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=1377391150,4109612028&fm=27&gp=0.jpg",
           class:
             "zoomInLeft animated-time-5 animated-time-function-ease animation-iteration-count"
         }
       ]
     },
-    fromShare:false, // 来自分享
+    fromShare: false, // 来自分享
     musicSrc:
-      "http://m10.music.126.net/20180515155337/d6de9d5496f568c5efc7125293124262/ymusic/a201/7d78/e420/e12da94e22a825f422ddebdfc50e8520.mp3",
+      "http://m10.music.126.net/20180516140738/3a68eaff703ca6dce9aefc367fdfe6f1/ymusic/c9c4/5730/a13f/21eb30b25746666a4a34dfacd1d06926.mp3",
     // 音乐源
     musicStop: false,
-    photoTimer:'', // 动画定时器
+    photoTimer: "", // 动画定时器
     showMenuBox: false, // 显示菜单点击后的盒子
     showType: "theme", // 显示盒子的类型
-    tType: "", // 主题类型
+    tType: "" // 主题类型
   };
 
   onLoad(options) {
     let that = this;
-    that.tType = that.tabList[0].type;
+    // that.tType = that.tabList[0].type;
     // 是否显示操作按钮
     that.fromShare = options.fromShare;
     let idx = `code${options.id}`;
+    if (!options.id) {
+      idx = "code1";
+    }
+    if (options.id == 2) {
+      that.bg2 = true;
+      wepy.setNavigationBarTitle({
+        title: "我的西藏梦"
+      });
+    }
     let curImgList = that.imgList[idx];
     let i = 0;
     that.imgUrl = curImgList[i];
@@ -345,50 +388,9 @@ export default class Photo extends wepy.page {
       let that = this;
       that.showMenuBox = true;
       that.showType = type;
+      console.log(that.showMenuBox, that.showType);
       console.log(`父组件${this.showType}`);
       that.$apply();
-    },
-
-    //添加图片
-    addPhoto() {
-      let that = this;
-      let imagesList = that.formData.photos || [];
-      wepy
-        .chooseImage({
-          count: 3,
-          sizeType: ["original", "compressed"],
-          sourceType: ["album", "camera"]
-        })
-        .then(res => {
-          that.formData.photos = imagesList.concat(res.tempFilePaths);
-          that.$apply();
-          res.tempFilePaths.forEach((item, index) => {
-            wepy
-              .uploadFile({
-                url: "/upload", //仅为示例，非真实的接口地址
-                filePath: item,
-                name: "image"
-              })
-              .then(res => {
-                console.log(111);
-              });
-          });
-        });
-    },
-    // 图片移动
-    move(type, i) {
-      let that = this;
-      let moveObj = that.formData.photos[i];
-      that.formData.photos.splice(i, 1);
-      if (type == "left") {
-        that.formData.photos.splice(i - 1, 0, moveObj);
-      } else {
-        that.formData.photos.splice(i + 1, 0, moveObj);
-      }
-    },
-    //删除图片
-    removePhoto(i) {
-      this.formData.photos.splice(i, 1);
     },
     downImg() {
       console.log("333");
@@ -433,7 +435,7 @@ export default class Photo extends wepy.page {
     closeMenuBox(type, data) {
       let that = this;
       that.showMenuBox = !that.showMenuBox;
-      if(type == 'theme'){
+      if (type == "theme") {
         that.bgImg = `https://raw.githubusercontent.com/songxianling/cxybaby/gh-pages/images/bg${data}.gif`;
         that.$apply();
       }

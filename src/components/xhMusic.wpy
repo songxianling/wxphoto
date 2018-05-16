@@ -10,8 +10,8 @@
     line-height: 50rpx;
     text-align: center;
     border-radius: 50%;
-    background: mediumvioletred;
-    color: tomato;
+    background: url("https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3743345127,1401986248&fm=27&gp=0.jpg");
+    background-size: 100% 100%;
   }
 }
 </style>
@@ -19,7 +19,7 @@
   <!-- 音乐组件page -->
   <view class="xh-music-box">
     <form @submit="submit" report-submit='true'>
-      <button class="music-icon {{musicRotateClass}}" @tap="handleMusic" form-type="submit">🎵</button>
+      <button class="music-icon {{musicRotateClass}}" @tap="handleMusic" form-type="submit"></button>
     </form>
   </view>
 </template>
@@ -61,7 +61,6 @@ export default class XHmusic extends wepy.component {
   }
   watch = {
     musicStop(musicStop) {
-      console.log(999);
       this.innerAudioContext.destroy();
     },
     musicSrc(musicSrc) {

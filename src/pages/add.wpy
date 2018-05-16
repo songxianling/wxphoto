@@ -1,4 +1,5 @@
 <style lang="less">
+@import '../styles/base.less';
 .add-photo-page {
   .form-group {
     padding: 20rpx 1em;
@@ -21,7 +22,7 @@
       position: relative;
       width: 128rpx;
       height: 170rpx;
-      border: 1px dashed #f23030;
+      border: 1px dashed @base-color;
       border-radius: 10rpx;
       background-position: center;
       background-repeat: no-repeat;
@@ -50,7 +51,7 @@
           line-height: 34rpx;
           text-align: center;
           border-radius: 17rpx;
-          background: #f23030;
+          background: @base-color;
           color: #fff;
         }
       }
@@ -62,7 +63,7 @@
       left: 25%;
       width: 50%;
       height: 0;
-      border-bottom: 1px solid #f23030;
+      border-bottom: 1px solid @base-color;
       transform: translateY(-50%);
     }
     .photo-preview.plus::after {
@@ -72,7 +73,7 @@
       left: 50%;
       width: 0;
       height: 50%;
-      border-right: 1px solid #f23030;
+      border-right: 1px solid @base-color;
       transform: translateX(-50%);
     }
   }
@@ -84,7 +85,7 @@
     line-height: 2.4em;
     text-align: center;
     margin: 3em auto;
-    background-color: #f23030;
+    background-color: @base-color;
     color: #fff;
   }
   .submit-btn button {

@@ -6,15 +6,32 @@
   .user-info {
     width: 100%;
     height: 360rpx;
-    padding-top: 90rpx;
+    padding-top: 70rpx;
     box-sizing: border-box;
-    background: #f1277d;
+    // background: #f1277d;
+    background: url("https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=943026750,2822875190&fm=200&gp=0.jpg");
+    background-size: 100% 100%;
     .user-header {
       display: block;
       width: 150rpx;
       height: 150rpx;
+      box-sizing: border-box;
+      border: 1px solid #ff5b11;
       margin: 0 auto;
       border-radius: 50%;
+    }
+    .user-name {
+      display: block;
+      width: 100%;
+      height: 50rpx;
+      line-height: 50rpx;
+      text-align: center;
+      margin-top: 20rpx;
+    }
+    button {
+      display: block;
+      width: 50%;
+      margin: auto;
     }
   }
   .photo-list {
@@ -35,28 +52,47 @@
         float: right;
         width: 400rpx;
         .name {
+          height: 50rpx;
+          line-height: 50rpx;
           font-size: 32rpx;
           font-weight: 700;
-          margin-bottom: 70rpx;
+          text-align: left;
+        }
+        .see-num {
+          float: left;
+          color: #c9c9c9;
+          margin: 20rpx 0;
+          font-size: 26rpx;
+        }
+        .share-num {
+          float: right;
+          margin: 20rpx 20rpx;
+          color: #c9c9c9;
+          font-size: 26rpx;
         }
         .open-btn {
-          display: inline-block;
+          float: left;
           width: 100rpx;
-          height: 36rpx;
-          line-height: 36rpx;
+          height: 40rpx;
+          line-height: 40rpx;
           text-align: center;
-          border: 1px solid #d78677;
+          font-size: 30rpx;
+          border: 1px solid #1b9af7;
+          color: #1b9af7;
           border-radius: 6rpx;
         }
 
         .share-btn {
-          display: inline-block;
+          float: right;
           width: 100rpx;
-          height: 36rpx;
-          line-height: 36rpx;
-          margin-left: 100rpx;
+          height: 40rpx;
+          line-height: 40rpx;
+          margin-right: 100rpx;
           text-align: center;
-          border: 1px solid #d78677;
+          font-size: 30rpx;
+          background: #1b9af7;
+          border: 1px solid #1b9af7;
+          color: #ffffff;
           border-radius: 6rpx;
         }
       }
@@ -73,7 +109,7 @@
     text-align: center;
     font-size: 40rpx;
     border-radius: 10rpx;
-    background: limegreen;
+    background: #1b9af7;
     color: #ffffff;
   }
 }
@@ -83,6 +119,7 @@
 <view class="index-page">
   <view class="user-info">
     <image class="user-header" wx:if="{{userInfo}}" src="{{userInfo.avatarUrl}}"></image>
+    <text class="user-name" wx:if="{{userInfo}}">{{userInfo.nickName}}</text>
     <button open-type="getUserInfo" wx:else  @getuserinfo="goSignIn">点击登录</button>
   </view>
   <form @submit="submit" report-submit='true'>
@@ -91,6 +128,8 @@
         <image class="cover-img" src="{{item.img}}"></image>
         <view class="r-box">
           <view class="name">{{item.title}}</view>
+          <text class="see-num">浏览量：{{item.seeNum}}</text>
+          <text class="share-num">已分享：{{item.shareNum}}</text>
           <button class="open-btn clear-btn" @tap="navTo('photo?id={{item.id}}')">打开</button>
           <button class="share-btn clear-btn" open-type="share" @tap="shareFn({{index}})">分享</button>
         </view>
@@ -116,14 +155,20 @@ export default class Index extends wepy.page {
     },
     photoList: [
       {
-        img: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382690602&di=39607c45bc5611f52ea2062b202fac61&imgtype=0&src=http%3A%2F%2Fu.candou.com%2Fs%2F500%2F2017%2F1028%2F1509182898720.jpg",
-        title: "最是那一低头的娇羞",
+        img:
+          "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1526382690602&di=39607c45bc5611f52ea2062b202fac61&imgtype=0&src=http%3A%2F%2Fu.candou.com%2Fs%2F500%2F2017%2F1028%2F1509182898720.jpg",
+        title: "RNG雄起简自豪",
+        seeNum: "77",
+        shareNum: "13",
         path: "/pages/photo?id=1&fromShare=true",
         id: 1
       },
       {
-        img: "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3020957609,1755005609&fm=27&gp=0.jpg",
-        title: "我是一块望夫石～～啦啦啦",
+        img:
+          "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3020957609,1755005609&fm=27&gp=0.jpg",
+        title: "我的西藏梦",
+        seeNum: "87",
+        shareNum: "27",
         path: "/pages/photo?id=2&fromShare=true",
         id: 2
       }
@@ -166,7 +211,7 @@ export default class Index extends wepy.page {
         });
       });
     },
-    shareFn(index){
+    shareFn(index) {
       console.log(index);
       this.shareData = this.photoList[index];
     },
